@@ -9,17 +9,30 @@ class UserInfoResult extends Equatable {
     required this.userInfoList,
   });
 
+  UserInfoResult.init() : this(currentPage: 0, userInfoList: []);
+
   factory UserInfoResult.fromJson(Map<String, dynamic> json) {
     return UserInfoResult(
-      currentPage: json['info']['page'],
+      currentPage: (json['info']['page'] as int) + 1,
       userInfoList: json['results']
           .map<UserInfo>((item) => UserInfo.fromJson(item))
           .toList(),
     );
   }
 
+  UserInfoResult copyWithFromJson(Map<String, dynamic> json) {
+    List<UserInfo> list = [...userInfoList];
+    list.addAll(
+      json['results'].map<UserInfo>((item) => UserInfo.fromJson(item)).toList(),
+    );
+    return UserInfoResult(
+      currentPage: (json['info']['page'] as int) + 1,
+      userInfoList: list,
+    );
+  }
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [currentPage, userInfoList];
 }
 
 class UserInfo extends Equatable {
